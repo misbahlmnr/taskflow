@@ -1,0 +1,29 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "task": "Belajar Next.js",
+      "status": "todo"
+    },
+    {
+      "id": 2,
+      "task": "Belajar React.js",
+      "status": "in-progress"
+    },
+    {
+      "id": 3,
+      "task": "Belajar Vue.js",
+      "status": "todo"
+    },
+    {
+      "id": 4,
+      "task": "Belajar Nuxt.js",
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "task": "Belajar Svelte.js",
+      "status": "todo"
+    }
+  ]
+}
