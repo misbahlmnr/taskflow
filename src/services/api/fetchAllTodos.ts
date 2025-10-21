@@ -1,14 +1,18 @@
-import { axiosInstance } from "@/lib/axios";
+import supabase from "@/lib/supabase";
+import { Todo } from "@/types/todos";
 
-type StatusTodo = "todo" | "in-progress" | "done";
+type TodoResponse = Todo;
 
-type TodoResponse = {
-  id: number;
-  task: string;
-  status: StatusTodo;
-};
+export const fetchAllTodos = async (): Promise<TodoResponse[]> => {
+  const { data, error } = await supabase
+    .from('todos')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-export const fetchAllTodos = async () => {
-  const response = await axiosInstance.get<TodoResponse[]>("/todos");
-  return response.data;
+  if (error) {
+    console.error('Error fetching todos:', error);
+    throw new Error(error.message || 'Failed to fetch todos');
+  }
+
+  return data as TodoResponse[];
 };

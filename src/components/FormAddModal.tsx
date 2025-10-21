@@ -12,30 +12,72 @@ import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { useCreateTodo } from "@/features/todo/mutation/useCreateTodo";
+import { useState } from "react";
 
 const FormAddModal = () => {
+  const [task, setTask] = useState<string>("");
+  const [open, setOpen] = useState(false);
+
+  const { mutate: createTodo, isPending } = useCreateTodo();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    createTodo({
+      task: task,
+      status: "todo",
+    }, {
+      onSuccess: () => {
+        setTask(""); // Clear the input field
+        setOpen(false); // Close the dialog
+      }
+    });
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus /> Add Task
+        <Button className="flex items-center gap-2">
+          <Plus size={16} /> Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add New Task</DialogTitle>
+          <DialogTitle>Create New Task</DialogTitle>
           <DialogDescription>
-            Create a new task to add to your list.
+            Add a new task to your list. You can edit it later.
           </DialogDescription>
         </DialogHeader>
-        <form action="" className="flex flex-col">
-          <div className="grid gap-2 mb-3">
-            <Label htmlFor="task">Task</Label>
-            <Input id="task" type="text" placeholder="What needs to be done?" />
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="space-y-2">
+            <Label htmlFor="task">Task Title</Label>
+            <Input
+              id="task"
+              type="text"
+              placeholder="Enter task title..."
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              disabled={isPending}
+              autoFocus
+              className="py-5"
+            />
           </div>
-          <Button type="submit" className="self-end mt-4">
-            Add Task
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="w-full sm:w-auto"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                  <span>Adding...</span>
+                </div>
+              ) : (
+                "Add Task"
+              )}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
