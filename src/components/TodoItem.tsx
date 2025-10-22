@@ -90,7 +90,7 @@ const TodoItem = ({
               <GripVertical size={16} className="text-gray-500" />
             </div>
             <Link href={`/task/${todo.id}`} className="flex-1 min-w-0">
-              <h3 className="font-medium text-base line-clamp-2 hover:text-blue-600 cursor-pointer">
+              <h3 className="font-medium text-sm md:text-base line-clamp-2 hover:text-blue-600 cursor-pointer">
                 {todo.task}
               </h3>
             </Link>

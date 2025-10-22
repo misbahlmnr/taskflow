@@ -23,21 +23,24 @@ const FormAddModal = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createTodo({
-      task: task,
-      status: "todo",
-    }, {
-      onSuccess: () => {
-        setTask(""); // Clear the input field
-        setOpen(false); // Close the dialog
+    createTodo(
+      {
+        task: task,
+        status: "todo",
+      },
+      {
+        onSuccess: () => {
+          setTask(""); // Clear the input field
+          setOpen(false); // Close the dialog
+        },
       }
-    });
+    );
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 text-sm md:text-base">
           <Plus size={16} /> Add Task
         </Button>
       </DialogTrigger>
@@ -59,7 +62,7 @@ const FormAddModal = () => {
               onChange={(e) => setTask(e.target.value)}
               disabled={isPending}
               autoFocus
-              className="py-5"
+              className="py-5 md:text-base text-sm"
             />
           </div>
           <div className="flex justify-end">

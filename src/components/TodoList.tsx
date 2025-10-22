@@ -12,7 +12,12 @@ interface TodoListProps {
   isLoading?: boolean; // Optional loading state
 }
 
-const TodoList = ({ todos, onItemDelete, sectionKey, isLoading = false }: TodoListProps) => {
+const TodoList = ({
+  todos,
+  onItemDelete,
+  sectionKey,
+  isLoading = false,
+}: TodoListProps) => {
   // Define colors for each status when dragging over
   const getDragOverColor = () => {
     switch (sectionKey) {
@@ -30,12 +35,12 @@ const TodoList = ({ todos, onItemDelete, sectionKey, isLoading = false }: TodoLi
   return (
     <Droppable droppableId={sectionKey}>
       {(provided, snapshot) => (
-        <div 
-          {...provided.droppableProps} 
+        <div
+          {...provided.droppableProps}
           ref={provided.innerRef}
           className={`space-y-3 min-h-[80px] rounded-lg border-2 border-dashed p-4 transition-colors duration-200 ${
-            snapshot.isDraggingOver 
-              ? `${getDragOverColor()} shadow-inner` 
+            snapshot.isDraggingOver
+              ? `${getDragOverColor()} shadow-inner`
               : "border-gray-200 bg-gray-50"
           }`}
         >
@@ -46,20 +51,16 @@ const TodoList = ({ todos, onItemDelete, sectionKey, isLoading = false }: TodoLi
             ))
           ) : todos.length > 0 ? (
             todos.map((todo, index) => (
-              <Draggable 
-                key={todo.id} 
-                draggableId={todo.id} 
-                index={index}
-              >
+              <Draggable key={todo.id} draggableId={todo.id} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     className="bg-white"
                   >
-                    <TodoItem 
-                      todo={todo} 
-                      onDelete={onItemDelete} 
+                    <TodoItem
+                      todo={todo}
+                      onDelete={onItemDelete}
                       isDragging={snapshot.isDragging}
                       dragHandleProps={provided.dragHandleProps}
                     />
@@ -69,7 +70,7 @@ const TodoList = ({ todos, onItemDelete, sectionKey, isLoading = false }: TodoLi
             ))
           ) : (
             <div className="flex items-center justify-center text-muted-foreground py-8">
-              <p>No tasks here</p>
+              <p className="text-sm md:text-base">No tasks here</p>
             </div>
           )}
           {provided.placeholder}
