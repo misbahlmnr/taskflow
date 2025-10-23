@@ -18,6 +18,7 @@ import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { TodoStatus } from "@/types/todos";
 
 interface EditTaskPageProps {
   params: {
@@ -59,7 +60,7 @@ const EditTaskPage = ({ params }: EditTaskPageProps) => {
         id: todo.id,
         payload: {
           task,
-          status,
+          status: status as TodoStatus,
         },
       },
       {

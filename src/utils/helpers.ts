@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
 
 // Type checkers
 export const isArray = (value: any): value is any[] => Array.isArray(value);

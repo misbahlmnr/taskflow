@@ -1,13 +1,13 @@
 import { queryClient, REACT_QUERY_CLIENT_KEY } from "@/lib/query-client";
 import { updateTodo } from "@/services/api/updateTodo";
-import { Todo } from "@/types/todos";
+import { TodoStatus } from "@/types/todos";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useUpdateTodoStatus = () => {
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) => 
-      updateTodo(id, { status }),
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      updateTodo(id, { status: status as TodoStatus }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [REACT_QUERY_CLIENT_KEY.todos],
@@ -16,7 +16,8 @@ export const useUpdateTodoStatus = () => {
     },
     onError: (error) => {
       toast.error("Failed to update task status", {
-        description: error.message || "An error occurred while updating the task status",
+        description:
+          error.message || "An error occurred while updating the task status",
       });
     },
   });
