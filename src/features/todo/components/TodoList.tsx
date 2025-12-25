@@ -1,7 +1,7 @@
 "use client";
 
 import { Droppable, Draggable } from "@hello-pangea/dnd";
-import { Todo } from "@/types/todos";
+import { Todo } from "@/features/todo/type";
 import TodoItem from "./TodoItem";
 import TodoItemSkeleton from "./TodoItemSkeleton";
 

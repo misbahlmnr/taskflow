@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Todo } from "@/types/todos";
-import { useUpdateTodoStatus } from "@/features/todo/mutation/useUpdateTodoStatus";
+import { Todo } from "@/features/todo/type";
+import { useUpdateTodoStatus } from "@/features/todo/hooks/useUpdateTodoStatus";
 import Link from "next/link";
 
 interface TodoItemProps {

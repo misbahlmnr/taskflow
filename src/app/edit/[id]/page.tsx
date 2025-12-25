@@ -12,13 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetTodoById } from "@/features/todo/query/useGetTodoById";
-import { useUpdateTodo } from "@/features/todo/mutation/useUpdateTodo";
+import { useGetTodoById } from "@/features/todo/hooks/useGetTodoById";
+import { useUpdateTodo } from "@/features/todo/hooks/useUpdateTodo";
 import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { TodoStatus } from "@/types/todos";
+import { TodoStatus } from "@/features/todo/type";
 
 interface EditTaskPageProps {
   params: {

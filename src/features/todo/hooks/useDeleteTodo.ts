@@ -14,7 +14,8 @@ export const useDeleteTodo = () => {
     },
     onError: (error) => {
       toast.error("Failed to delete task", {
-        description: error.message || "An error occurred while deleting the task",
+        description:
+          error.message || "An error occurred while deleting the task",
       });
     },
   });

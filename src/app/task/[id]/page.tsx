@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetTodoById } from "@/features/todo/query/useGetTodoById";
-import { useDeleteTodo } from "@/features/todo/mutation/useDeleteTodo";
+import { useGetTodoById } from "@/features/todo/hooks/useGetTodoById";
+import { useDeleteTodo } from "@/features/todo/hooks/useDeleteTodo";
 import Link from "next/link";
 import { ArrowLeft, Pencil, Trash2, Calendar, Hash } from "lucide-react";
 import { toast } from "sonner";
-import { useUpdateTodoStatus } from "@/features/todo/mutation/useUpdateTodoStatus";
+import { useUpdateTodoStatus } from "@/features/todo/hooks/useUpdateTodoStatus";
 import { useRouter } from "next/navigation";
 
 interface TaskDetailPageProps {

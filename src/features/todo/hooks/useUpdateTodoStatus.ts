@@ -1,6 +1,6 @@
 import { queryClient, REACT_QUERY_CLIENT_KEY } from "@/lib/query-client";
 import { updateTodo } from "@/services/api/updateTodo";
-import { TodoStatus } from "@/types/todos";
+import { TodoStatus } from "@/features/todo/type";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
