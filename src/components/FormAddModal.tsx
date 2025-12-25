@@ -12,20 +12,21 @@ import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useCreateTodo } from "@/features/todo/hooks/useCreateTodo";
+// import { useCreateTodo } from "@/features/todo/hooks/useCreateTask";
 import { useState } from "react";
+import { useCreateTask } from "@/features/todo/hooks/use-create-task";
 
 const FormAddModal = () => {
   const [task, setTask] = useState<string>("");
   const [open, setOpen] = useState(false);
 
-  const { mutate: createTodo, isPending } = useCreateTodo();
+  const { mutate: createTask, isPending } = useCreateTask();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createTodo(
+    createTask(
       {
-        task: task,
+        name: task,
         status: "todo",
       },
       {

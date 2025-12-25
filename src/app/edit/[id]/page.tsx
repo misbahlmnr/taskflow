@@ -12,13 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetTodoById } from "@/features/todo/hooks/useGetTodoById";
-import { useUpdateTodo } from "@/features/todo/hooks/useUpdateTodo";
 import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { TodoStatus } from "@/features/todo/type";
+import { useTaksById } from "@/features/todo/hooks/use-task-by-id";
+import { useUpdateTask } from "@/features/todo/hooks/use-update-task";
 
 interface EditTaskPageProps {
   params: {
@@ -29,8 +29,9 @@ interface EditTaskPageProps {
 const EditTaskPage = ({ params }: EditTaskPageProps) => {
   const { id } = params;
   const router = useRouter();
-  const { data: todo, isLoading, error } = useGetTodoById(id);
-  const { mutate: updateTodo, isPending } = useUpdateTodo();
+
+  const { data: todo, isLoading, error } = useTaksById(Number(id));
+  const { mutate: updateTask, isPending } = useUpdateTask();
 
   if (isLoading) {
     return (
@@ -55,7 +56,7 @@ const EditTaskPage = ({ params }: EditTaskPageProps) => {
     const task = formData.get("task") as string;
     const status = formData.get("status") as string;
 
-    updateTodo(
+    updateTask(
       {
         id: todo.id,
         payload: {

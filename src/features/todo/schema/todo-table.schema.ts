@@ -9,7 +9,7 @@ import {
 
 export const todoStatusEnum = pgEnum("todo_status", [
   "todo",
-  "in_progress",
+  "in-progress",
   "done",
 ]);
 

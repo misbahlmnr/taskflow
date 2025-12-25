@@ -10,8 +10,14 @@ const createTodoSchema = z.object({
   status: z.enum(["todo", "in-progress", "done"]).default("todo"),
 });
 
+const updateStatusSchema = z.object({
+  id: z.number(),
+  status: z.enum(["todo", "in-progress", "done"]),
+});
+
 export type CreateTodoDto = z.infer<typeof createTodoSchema>;
 export type UpdateTodoDto = CreateTodoDto & { id: number };
+export type UpdateStatusDto = z.infer<typeof updateStatusSchema>;
 
 export async function GET() {
   const data = await todoService.getTodos();
@@ -53,4 +59,14 @@ export async function DELETE(request: Request) {
     { message: "Todo deleted successfully" },
     { status: 200 }
   );
+}
+
+export async function PATCH(request: Request) {
+  const body = updateStatusSchema.parse(await request.json());
+  const res = await todoService.updateStatus(body);
+
+  return NextResponse.json({
+    message: "Status updated successfully",
+    data: res,
+  });
 }

@@ -4,28 +4,28 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import TodoList from "@/features/todo/components/TodoList";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useDeleteTodo } from "@/features/todo/hooks/useDeleteTodo";
-import { useGetAllTodos } from "@/features/todo/hooks/useGetAllTodos";
-import { useUpdateTodo } from "@/features/todo/hooks/useUpdateTodo";
 import { cn, isEmpty } from "@/lib/utils";
 import { Plus, ListTodo } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Todo } from "@/features/todo/type";
+import { useTask } from "@/features/todo/hooks/use-tasks";
+import { useUpdateTask } from "@/features/todo/hooks/use-update-task";
+import { useDeleteTask } from "../hooks/use-delete-task";
 
 export default function TodoPage() {
   const [taskLists, setTaskLists] = useState<Todo[]>([]);
 
-  const { data: todoData, isLoading, refetch } = useGetAllTodos();
-  const { mutate: deleteTodo } = useDeleteTodo();
-  const { mutate: updateTodo } = useUpdateTodo();
+  const { data: taskData, isLoading, refetch } = useTask();
+  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: deleteTask } = useDeleteTask();
 
   useEffect(() => {
-    if (todoData) {
-      setTaskLists(todoData);
+    if (taskData) {
+      setTaskLists(taskData);
     }
-  }, [todoData]);
+  }, [taskData]);
 
   const sections = [
     { key: "todo", label: "To Do", color: "bg-gray-200" },
@@ -43,7 +43,8 @@ export default function TodoPage() {
   );
 
   const handleDelete = (id: string) => {
-    deleteTodo(id, {
+    console.log("ok");
+    deleteTask(id, {
       onSuccess: () => {
         setTaskLists((prev) => prev.filter((t) => t.id !== id));
         toast.success("Task deleted successfully");
@@ -77,7 +78,7 @@ export default function TodoPage() {
     );
 
     // Update in server
-    updateTodo(
+    updateTask(
       {
         id: draggableId,
         payload: { ...draggedTask, status: newStatus },

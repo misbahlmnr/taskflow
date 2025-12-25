@@ -8,8 +8,3 @@ export const queryClient = new QueryClient({
     },
   },
 });
-
-export const REACT_QUERY_CLIENT_KEY = {
-  todos: "todos",
-  "detail-todo": (id: number) => `detail-todo-${id}`,
-};

@@ -19,14 +19,14 @@ export class TodoRepository {
     return todo;
   }
 
-  async update(data: UpdateTodo) {
+  async update(id: number, data: Omit<UpdateTodo, "id">) {
     const [todo] = await db
       .update(todosTable)
       .set(data)
-      .where(eq(todosTable.id, data.id))
+      .where(eq(todosTable.id, id))
       .returning();
 
-    return todo;
+    return todo ?? null;
   }
 
   delete(id: number) {

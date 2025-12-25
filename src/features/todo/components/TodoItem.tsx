@@ -2,9 +2,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "./ui/button";
 import { Pencil, Trash2, GripVertical } from "lucide-react";
-import { Badge } from "./ui/badge";
 import {
   Select,
   SelectContent,
@@ -14,8 +12,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Todo } from "@/features/todo/type";
-import { useUpdateTodoStatus } from "@/features/todo/hooks/useUpdateTodoStatus";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useUpdateStatus } from "../hooks/use-update-status";
 
 interface TodoItemProps {
   todo: Todo;
@@ -31,7 +31,7 @@ const TodoItem = ({
   isDragging,
   dragHandleProps,
 }: TodoItemProps) => {
-  const { mutate: updateStatus, isPending } = useUpdateTodoStatus();
+  const { mutate: updateStatus } = useUpdateStatus();
 
   const getStatusInfo = () => {
     switch (todo.status) {
@@ -92,7 +92,7 @@ const TodoItem = ({
             </div>
             <Link href={`/task/${todo.id}`} className="flex-1 min-w-0">
               <h3 className="font-medium text-sm md:text-base line-clamp-2 hover:text-blue-600 cursor-pointer">
-                {todo.task}
+                {todo.name}
               </h3>
             </Link>
           </div>
@@ -103,7 +103,7 @@ const TodoItem = ({
               className="h-8 w-8 hover:bg-blue-50 hover:text-blue-600"
               aria-label="Edit Task"
               asChild
-              disabled={isPending}
+              disabled={false}
             >
               <Link href={`/edit/${todo.id}`}>
                 <Pencil size={16} />
@@ -115,7 +115,7 @@ const TodoItem = ({
               className="h-8 w-8 hover:bg-red-50 hover:text-red-600"
               aria-label="Delete Task"
               onClick={handleDelete}
-              disabled={isPending}
+              disabled={false}
             >
               <Trash2 size={16} className="text-red-500" />
             </Button>
@@ -133,7 +133,7 @@ const TodoItem = ({
           <Select
             value={todo.status}
             onValueChange={handleStatusChange}
-            disabled={isPending}
+            disabled={false}
           >
             <SelectTrigger className="h-8 w-32 text-xs">
               <SelectValue />

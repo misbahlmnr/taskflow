@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetTodoById } from "@/features/todo/hooks/useGetTodoById";
-import { useDeleteTodo } from "@/features/todo/hooks/useDeleteTodo";
 import Link from "next/link";
 import { ArrowLeft, Pencil, Trash2, Calendar, Hash } from "lucide-react";
 import { toast } from "sonner";
-import { useUpdateTodoStatus } from "@/features/todo/hooks/useUpdateTodoStatus";
 import { useRouter } from "next/navigation";
+import { useTaksById } from "@/features/todo/hooks/use-task-by-id";
+import { useDeleteTask } from "@/features/todo/hooks/use-delete-task";
+import { useUpdateStatus } from "@/features/todo/hooks/use-update-status";
 
 interface TaskDetailPageProps {
   params: {
@@ -20,9 +20,10 @@ interface TaskDetailPageProps {
 const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
   const { id } = params;
   const router = useRouter();
-  const { data: todo, isLoading, error } = useGetTodoById(id);
-  const { mutate: deleteTodo, isPending: isDeleting } = useDeleteTodo();
-  const { mutate: updateStatus } = useUpdateTodoStatus();
+
+  const { data: task, isLoading, error } = useTaksById(Number(id));
+  const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
+  const { mutate: updateStatus } = useUpdateStatus();
 
   if (isLoading) {
     return (
@@ -35,7 +36,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
     );
   }
 
-  if (error || !todo) {
+  if (error || !task) {
     router.push("/");
     return null;
   }
@@ -46,7 +47,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
         "Are you sure you want to delete this task? This action cannot be undone."
       )
     ) {
-      deleteTodo(id, {
+      deleteTask(id, {
         onSuccess: () => {
           toast.success("Task deleted successfully!");
           router.push("/"); // Redirect to home after deletion
@@ -58,7 +59,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
   const handleStatusChange = (newStatus: string) => {
     updateStatus(
       {
-        id: todo.id,
+        id: task.id,
         status: newStatus,
       },
       {
@@ -71,7 +72,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
 
   // Function to get badge info based on status
   const getStatusInfo = () => {
-    switch (todo.status) {
+    switch (task.status) {
       case "todo":
         return {
           label: "To Do",
@@ -118,7 +119,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <CardTitle className="text-2xl">{todo.task}</CardTitle>
+                <CardTitle className="text-2xl">{task.task}</CardTitle>
               </div>
               <div className="flex gap-2 ml-4">
                 <Button
@@ -128,7 +129,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
                   disabled={isDeleting}
                 >
                   <Link
-                    href={`/edit/${todo.id}`}
+                    href={`/edit/${task.id}`}
                     className="flex items-center gap-2"
                   >
                     <Pencil size={16} /> Edit
@@ -161,7 +162,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
                   <p className="text-xs text-muted-foreground uppercase tracking-wide">
                     Task ID
                   </p>
-                  <p className="font-mono text-sm">{todo.id}</p>
+                  <p className="font-mono text-sm">{task.id}</p>
                 </div>
               </div>
 
@@ -173,7 +174,7 @@ const TaskDetailPage = ({ params }: TaskDetailPageProps) => {
                   </p>
                   <div className="flex items-center gap-3 mt-1">
                     <select
-                      value={todo.status}
+                      value={task.status}
                       onChange={(e) => handleStatusChange(e.target.value)}
                       className="border rounded-md px-3 py-2 text-sm bg-background w-full"
                       disabled={isDeleting}

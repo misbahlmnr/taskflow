@@ -14,3 +14,5 @@ export type Todo = {
 export type InsertTodo = typeof todosTable.$inferInsert;
 export type UpdateTodo = Partial<InsertTodo> & { id: number };
 export type SelectTodo = typeof todosTable.$inferSelect;
+
+export type GetTaskResponse = Todo[];
