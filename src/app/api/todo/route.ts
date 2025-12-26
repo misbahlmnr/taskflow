@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TodoService } from "@/features/todo/server/todo.service";
 import { NextResponse } from "next/server";
+import { updateTaskSchema } from "@/features/todo/schema/form-task.schema";
 
 const todoService = new TodoService();
 
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const body = createTodoSchema
+  const body = updateTaskSchema
     .extend({ id: z.number() })
     .parse(await request.json());
   const todo = await todoService.updateTodo(body);

@@ -10,16 +10,17 @@ type Params = {
 const todoService = new TodoService();
 
 export async function GET(_req: Request, { params }: Params) {
-  const id = Number(params.id);
+  const { id } = await params;
+  const todoId = Number(id);
 
-  if (isNaN(id)) {
+  if (isNaN(todoId)) {
     return NextResponse.json(
       { message: "Invalid 'id' parameter" },
       { status: 400 }
     );
   }
 
-  const task = await todoService.getTodoById(id);
+  const task = await todoService.getTodoById(todoId);
 
   return NextResponse.json(task);
 }

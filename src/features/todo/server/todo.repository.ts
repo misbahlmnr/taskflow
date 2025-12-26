@@ -9,8 +9,13 @@ export class TodoRepository {
     return db.select().from(todosTable);
   }
 
-  findById(id: number) {
-    return db.select().from(todosTable).where(eq(todosTable.id, id));
+  async findById(id: number) {
+    const [todo] = await db
+      .select()
+      .from(todosTable)
+      .where(eq(todosTable.id, id));
+
+    return todo ?? null;
   }
 
   async create(data: InsertTodo) {

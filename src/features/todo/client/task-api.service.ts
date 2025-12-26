@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
-import { CreateTaskSchema } from "@/features/todo/schema/form-task.schema";
-import { GetTaskResponse } from "@/features/todo/type";
+import { GetTaskResponse, Todo } from "@/features/todo/type";
+import { CreateTaskFormValues } from "@/features/todo/schema/form-task.schema";
 
 export class TaskApiService {
   static async getTasks() {
@@ -9,16 +9,16 @@ export class TaskApiService {
   }
 
   static async getTaskById(id: number) {
-    const res = await axiosInstance.get(`/todo/${id}`);
+    const res = await axiosInstance.get<Todo>(`/todo/${id}`);
     return res.data;
   }
 
-  static async createTask(payload: CreateTaskSchema) {
+  static async createTask(payload: CreateTaskFormValues) {
     const res = await axiosInstance.post("/todo", payload);
     return res.data;
   }
 
-  static async updateTask(payload: CreateTaskSchema & { id: number }) {
+  static async updateTask(payload: CreateTaskFormValues & { id: number }) {
     const res = await axiosInstance.put("/todo", payload);
     return res.data;
   }

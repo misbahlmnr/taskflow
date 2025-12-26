@@ -5,7 +5,7 @@ export type TodoStatus = "todo" | "in-progress" | "done";
 export type Todo = {
   id: string;
   name: string;
-  desription: string | null;
+  description: string | null;
   status: TodoStatus;
   created_at: string;
   updated_at: string | null;
