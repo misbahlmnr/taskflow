@@ -26,19 +26,57 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = createTodoSchema.parse(await request.json());
-  const todo = await taskService.createTask(body);
+  try {
+    const body = createTodoSchema.parse(await request.json());
+    const todo = await taskService.createTask(body);
 
-  return NextResponse.json(todo, { status: 201 });
+    return NextResponse.json(todo, { status: 201 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          message: "Validation error",
+          errors: error.flatten().fieldErrors,
+        },
+        { status: 422 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: "Internal Server Error",
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(request: Request) {
-  const body = updateTaskSchema
-    .extend({ id: z.number() })
-    .parse(await request.json());
-  const todo = await taskService.updateTask(body);
+  try {
+    const body = updateTaskSchema
+      .extend({ id: z.number() })
+      .parse(await request.json());
+    const todo = await taskService.updateTask(body);
 
-  return NextResponse.json(todo);
+    return NextResponse.json(todo);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          message: "Validation error",
+          errors: error.flatten().fieldErrors,
+        },
+        { status: 422 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: "Internal Server Error",
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(request: Request) {
@@ -63,11 +101,30 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const body = updateStatusSchema.parse(await request.json());
-  const res = await taskService.updateStatus(body);
+  try {
+    const body = updateStatusSchema.parse(await request.json());
+    const res = await taskService.updateStatus(body);
 
-  return NextResponse.json({
-    message: "Status updated successfully",
-    data: res,
-  });
+    return NextResponse.json({
+      message: "Status updated successfully",
+      data: res,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          message: "Validation error",
+          errors: error.flatten().fieldErrors,
+        },
+        { status: 422 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: "Internal Server Error",
+      },
+      { status: 500 }
+    );
+  }
 }

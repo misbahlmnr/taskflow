@@ -51,7 +51,11 @@ const TaskList = ({
             ))
           ) : tasks?.length > 0 ? (
             tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
+              <Draggable
+                key={task.id}
+                draggableId={`task-${task.id}`}
+                index={index}
+              >
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}

@@ -11,14 +11,14 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Task } from "@/features/task/type";
 import { useTask } from "@/features/task/hooks/use-tasks";
-import { useUpdateTask } from "@/features/task/hooks/use-update-task";
 import { useDeleteTask } from "../hooks/use-delete-task";
+import { useUpdateStatus } from "../hooks/use-update-status";
 
 export default function TodoPage() {
   const [taskLists, setTaskLists] = useState<Task[]>([]);
 
   const { data: taskData, isLoading, refetch } = useTask();
-  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: updateStatusTask } = useUpdateStatus();
   const { mutate: deleteTask } = useDeleteTask();
 
   useEffect(() => {
@@ -43,8 +43,7 @@ export default function TodoPage() {
   );
 
   const handleDelete = (id: string) => {
-    console.log("ok");
-    deleteTask(id, {
+    deleteTask(Number(id), {
       onSuccess: () => {
         setTaskLists((prev) => prev.filter((t) => t.id !== id));
         toast.success("Task deleted successfully");
@@ -62,7 +61,8 @@ export default function TodoPage() {
       return;
     }
 
-    const draggedTask = taskLists.find((task) => task.id === draggableId);
+    const taskId = draggableId.replace("task-", "");
+    const draggedTask = taskLists.find((task) => String(task.id) === taskId);
     if (!draggedTask) return;
 
     const newStatus = destination.droppableId as
@@ -73,15 +73,15 @@ export default function TodoPage() {
     // Update UI in local state
     setTaskLists((prev) =>
       prev.map((task) =>
-        task.id === draggableId ? { ...task, status: newStatus } : task
+        String(task.id) === taskId ? { ...task, status: newStatus } : task
       )
     );
 
     // Update in server
-    updateTask(
+    updateStatusTask(
       {
-        id: draggableId,
-        payload: { ...draggedTask, status: newStatus },
+        id: Number(taskId),
+        status: newStatus,
       },
       {
         onSuccess: () => {
@@ -96,7 +96,7 @@ export default function TodoPage() {
           // Revert status in local state on error
           setTaskLists((prev) =>
             prev.map((task) =>
-              task.id === draggableId
+              String(task.id) === taskId
                 ? { ...task, status: draggedTask.status }
                 : task
             )
