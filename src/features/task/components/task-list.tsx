@@ -1,23 +1,23 @@
 "use client";
 
 import { Droppable, Draggable } from "@hello-pangea/dnd";
-import { Todo } from "@/features/todo/type";
-import TodoItem from "./TodoItem";
-import TodoItemSkeleton from "./TodoItemSkeleton";
+import { Task } from "@/features/task/type";
+import TodoItem from "./task-item";
+import TodoItemSkeleton from "./task-item-skeleton";
 
-interface TodoListProps {
-  todos: Todo[];
+interface TaskListProps {
+  tasks: Task[];
   onItemDelete: (id: string) => void;
   sectionKey: string; // Identifier for the section (todo, in-progress, done)
   isLoading?: boolean; // Optional loading state
 }
 
-const TodoList = ({
-  todos,
+const TaskList = ({
+  tasks,
   onItemDelete,
   sectionKey,
   isLoading = false,
-}: TodoListProps) => {
+}: TaskListProps) => {
   // Define colors for each status when dragging over
   const getDragOverColor = () => {
     switch (sectionKey) {
@@ -49,9 +49,9 @@ const TodoList = ({
             Array.from({ length: 3 }).map((_, index) => (
               <TodoItemSkeleton key={`skeleton-${index}`} />
             ))
-          ) : todos.length > 0 ? (
-            todos.map((todo, index) => (
-              <Draggable key={todo.id} draggableId={todo.id} index={index}>
+          ) : tasks?.length > 0 ? (
+            tasks.map((task, index) => (
+              <Draggable key={task.id} draggableId={task.id} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -59,7 +59,7 @@ const TodoList = ({
                     className="bg-white"
                   >
                     <TodoItem
-                      todo={todo}
+                      task={task}
                       onDelete={onItemDelete}
                       isDragging={snapshot.isDragging}
                       dragHandleProps={provided.dragHandleProps}
@@ -80,4 +80,4 @@ const TodoList = ({
   );
 };
 
-export default TodoList;
+export default TaskList;

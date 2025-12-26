@@ -11,30 +11,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Todo } from "@/features/todo/type";
+import { Task } from "@/features/task/type";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useUpdateStatus } from "../hooks/use-update-status";
 
-interface TodoItemProps {
-  todo: Todo;
+interface TaskItemProps {
+  task: Task;
   onDelete: (id: string) => void;
   // Drag and drop props
   isDragging?: boolean;
   dragHandleProps?: any;
 }
 
-const TodoItem = ({
-  todo,
+const TaskItem = ({
+  task,
   onDelete,
   isDragging,
   dragHandleProps,
-}: TodoItemProps) => {
+}: TaskItemProps) => {
   const { mutate: updateStatus } = useUpdateStatus();
 
   const getStatusInfo = () => {
-    switch (todo.status) {
+    switch (task.status) {
       case "todo":
         return {
           label: "To Do",
@@ -65,12 +65,12 @@ const TodoItem = ({
   const statusInfo = getStatusInfo();
 
   const handleDelete = () => {
-    onDelete(todo.id);
+    onDelete(task.id);
   };
 
   const handleStatusChange = (value: string) => {
     updateStatus({
-      id: todo.id,
+      id: task.id,
       status: value,
     });
   };
@@ -90,9 +90,9 @@ const TodoItem = ({
             >
               <GripVertical size={16} className="text-gray-500" />
             </div>
-            <Link href={`/task/${todo.id}`} className="flex-1 min-w-0">
+            <Link href={`/task/${task.id}`} className="flex-1 min-w-0">
               <h3 className="font-medium text-sm md:text-base line-clamp-2 hover:text-blue-600 cursor-pointer">
-                {todo.name}
+                {task.name}
               </h3>
             </Link>
           </div>
@@ -105,7 +105,7 @@ const TodoItem = ({
               asChild
               disabled={false}
             >
-              <Link href={`/edit/${todo.id}`}>
+              <Link href={`/edit/${task.id}`}>
                 <Pencil size={16} />
               </Link>
             </Button>
@@ -131,7 +131,7 @@ const TodoItem = ({
           </Badge>
 
           <Select
-            value={todo.status}
+            value={task.status}
             onValueChange={handleStatusChange}
             disabled={false}
           >
@@ -158,4 +158,4 @@ const TodoItem = ({
   );
 };
 
-export default TodoItem;
+export default TaskItem;

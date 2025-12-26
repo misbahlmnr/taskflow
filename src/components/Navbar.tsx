@@ -1,8 +1,8 @@
 "use client";
 
 import { CheckSquare } from "lucide-react";
-import MaxWidthWrapper from "./MaxWidthWrapper";
-import FormAddModal from "./FormAddModal";
+import MaxWidthWrapper from "./max-width-wrapper";
+import FormAddModal from "./form-add-modal";
 import Link from "next/link";
 
 const Navbar = () => {

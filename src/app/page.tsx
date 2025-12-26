@@ -1,1 +1,1 @@
-export { default } from "@/features/todo/pages/TodoPage";
+export { default } from "@/features/task/pages/task-page";

@@ -14,7 +14,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 // import { useCreateTodo } from "@/features/todo/hooks/useCreateTask";
 import { useState } from "react";
-import { useCreateTask } from "@/features/todo/hooks/use-create-task";
+import { useCreateTask } from "@/features/task/hooks/use-create-task";
 
 const FormAddModal = () => {
   const [task, setTask] = useState<string>("");

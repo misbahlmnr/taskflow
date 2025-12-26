@@ -1,4 +1,4 @@
-import { TodoService } from "@/features/todo/server/todo.service";
+import { TaskService } from "@/features/task/server/task.service";
 import { NextResponse } from "next/server";
 
 type Params = {
@@ -7,7 +7,7 @@ type Params = {
   };
 };
 
-const todoService = new TodoService();
+const taskService = new TaskService();
 
 export async function GET(_req: Request, { params }: Params) {
   const { id } = await params;
@@ -20,7 +20,7 @@ export async function GET(_req: Request, { params }: Params) {
     );
   }
 
-  const task = await todoService.getTodoById(todoId);
+  const task = await taskService.getTaskById(todoId);
 
   return NextResponse.json(task);
 }

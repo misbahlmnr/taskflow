@@ -25,12 +25,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useTaksById } from "@/features/todo/hooks/use-task-by-id";
-import { useUpdateTask } from "@/features/todo/hooks/use-update-task";
+import { useTaksById } from "@/features/task/hooks/use-task-by-id";
+import { useUpdateTask } from "@/features/task/hooks/use-update-task";
 import {
   updateTaskSchema,
   UpdateTaskFormValues,
-} from "@/features/todo/schema/form-task.schema";
+} from "@/features/task/schema/form-task.schema";
 
 const EditTaskPage = () => {
   const params = useParams();

@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { TodoService } from "@/features/todo/server/todo.service";
+import { TaskService } from "@/features/task/server/task.service";
 import { NextResponse } from "next/server";
-import { updateTaskSchema } from "@/features/todo/schema/form-task.schema";
+import { updateTaskSchema } from "@/features/task/schema/form-task.schema";
 
-const todoService = new TodoService();
+const taskService = new TaskService();
 
 const createTodoSchema = z.object({
   name: z.string().min(1),
@@ -21,13 +21,13 @@ export type UpdateTodoDto = CreateTodoDto & { id: number };
 export type UpdateStatusDto = z.infer<typeof updateStatusSchema>;
 
 export async function GET() {
-  const data = await todoService.getTodos();
+  const data = await taskService.getTasks();
   return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
   const body = createTodoSchema.parse(await request.json());
-  const todo = await todoService.createTodo(body);
+  const todo = await taskService.createTask(body);
 
   return NextResponse.json(todo, { status: 201 });
 }
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
   const body = updateTaskSchema
     .extend({ id: z.number() })
     .parse(await request.json());
-  const todo = await todoService.updateTodo(body);
+  const todo = await taskService.updateTask(body);
 
   return NextResponse.json(todo);
 }
@@ -54,7 +54,7 @@ export async function DELETE(request: Request) {
     );
   }
 
-  await todoService.deleteTodo(Number(id));
+  await taskService.deleteTask(Number(id));
 
   return NextResponse.json(
     { message: "Todo deleted successfully" },
@@ -64,7 +64,7 @@ export async function DELETE(request: Request) {
 
 export async function PATCH(request: Request) {
   const body = updateStatusSchema.parse(await request.json());
-  const res = await todoService.updateStatus(body);
+  const res = await taskService.updateStatus(body);
 
   return NextResponse.json({
     message: "Status updated successfully",

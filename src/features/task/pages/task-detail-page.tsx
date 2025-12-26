@@ -7,9 +7,9 @@ import Link from "next/link";
 import { ArrowLeft, Pencil, Trash2, Calendar, Hash } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useTaksById } from "@/features/todo/hooks/use-task-by-id";
-import { useDeleteTask } from "@/features/todo/hooks/use-delete-task";
-import { useUpdateStatus } from "@/features/todo/hooks/use-update-status";
+import { useTaksById } from "@/features/task/hooks/use-task-by-id";
+import { useDeleteTask } from "@/features/task/hooks/use-delete-task";
+import { useUpdateStatus } from "@/features/task/hooks/use-update-status";
 
 interface TaskDetailPageProps {
   params: {

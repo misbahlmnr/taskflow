@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const TodoItemSkeleton = () => {
+const TaskItemSkeleton = () => {
   return (
     <Card className="shadow-sm">
       <div className="p-4">
@@ -25,4 +25,4 @@ const TodoItemSkeleton = () => {
   );
 };
 
-export default TodoItemSkeleton;
+export default TaskItemSkeleton;

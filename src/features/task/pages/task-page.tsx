@@ -1,7 +1,7 @@
 "use client";
 
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import TodoList from "@/features/todo/components/TodoList";
+import TodoList from "@/features/task/components/task-list";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn, isEmpty } from "@/lib/utils";
@@ -9,13 +9,13 @@ import { Plus, ListTodo } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Todo } from "@/features/todo/type";
-import { useTask } from "@/features/todo/hooks/use-tasks";
-import { useUpdateTask } from "@/features/todo/hooks/use-update-task";
+import { Task } from "@/features/task/type";
+import { useTask } from "@/features/task/hooks/use-tasks";
+import { useUpdateTask } from "@/features/task/hooks/use-update-task";
 import { useDeleteTask } from "../hooks/use-delete-task";
 
 export default function TodoPage() {
-  const [taskLists, setTaskLists] = useState<Todo[]>([]);
+  const [taskLists, setTaskLists] = useState<Task[]>([]);
 
   const { data: taskData, isLoading, refetch } = useTask();
   const { mutate: updateTask } = useUpdateTask();
@@ -181,7 +181,7 @@ export default function TodoPage() {
                 </div>
 
                 <TodoList
-                  todos={section.items}
+                  tasks={section.items}
                   onItemDelete={handleDelete}
                   sectionKey={section.key}
                   isLoading={isLoading}

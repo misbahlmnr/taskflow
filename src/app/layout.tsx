@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import QueryProvider from "@/components/providers/QueryProvider";
+import Navbar from "@/components/navbar";
+import QueryProvider from "@/components/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -18,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased bg-[#FAFAFA]`}>
+      <body
+        className={`${inter.className} antialiased bg-[#FAFAFA]`}
+        cz-shortcut-listen="true"
+      >
         <QueryProvider>
           <main className="flex flex-col min-h-screen">
             <Navbar />
