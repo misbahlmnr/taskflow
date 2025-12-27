@@ -41,3 +41,9 @@ export const isEmpty = (
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const formatTime = (second: number) => {
+  const mins = Math.floor(second / 60);
+  const secs = mins % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};

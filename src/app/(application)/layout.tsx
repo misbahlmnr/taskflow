@@ -4,7 +4,7 @@ import { ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./error";
 import Loader from "nextjs-toploader";
-import PanelTemplate from "@/components/panel-template";
+import PanelTemplate from "@/components/layout/panel-template";
 import CustomSessionProvider from "@/features/auth/provider/custom-session-provider";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
