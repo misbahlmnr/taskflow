@@ -22,32 +22,32 @@ import { Github } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  LoginFormSchema,
-  loginFormSchema,
-} from "@/features/auth/schema/login.schema";
+  registerFormSchema,
+  RegisterFormSchema,
+} from "@/features/auth/schema/register.schema";
 import Link from "next/link";
 
-const LoginForm = ({ className }: { className?: string }) => {
-  const form = useForm<LoginFormSchema>({
-    resolver: zodResolver(loginFormSchema),
+const RegisterForm = ({ className }: { className?: string }) => {
+  const form = useForm<RegisterFormSchema>({
+    resolver: zodResolver(registerFormSchema),
   });
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardTitle className="text-xl">Create an account</CardTitle>
           <CardDescription>
-            Login with your Github or Google account
+            Enter your information below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
-            <FieldGroup>
-              <Field>
+            <FieldGroup className="gap-3">
+              <Field className="mb-5">
                 <Button variant="outline" type="button">
                   <Github />
-                  Login with Github
+                  Sign Up with Github
                 </Button>
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -56,12 +56,32 @@ const LoginForm = ({ className }: { className?: string }) => {
                       fill="currentColor"
                     />
                   </svg>
-                  Login with Google
+                  Sign Up with Google
                 </Button>
               </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card mb-5">
                 Or continue with
               </FieldSeparator>
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="John doe"
+                      autoComplete="off"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
               <Controller
                 control={form.control}
                 name="email"
@@ -87,16 +107,7 @@ const LoginForm = ({ className }: { className?: string }) => {
                 name="password"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <div className="flex items-center">
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <a
-                        href="#"
-                        className="ml-auto text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
-                    </div>
-
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
                     <Input
                       {...field}
                       id={field.name}
@@ -109,11 +120,33 @@ const LoginForm = ({ className }: { className?: string }) => {
                   </Field>
                 )}
               />
+
+              <Controller
+                control={form.control}
+                name="confirmPassword"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="confirmPassword">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="*******"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit">Register</Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link href="/sign-up">Sign up</Link>
+                  <Link href="/sign-in">Sign in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -129,4 +162,4 @@ const LoginForm = ({ className }: { className?: string }) => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
