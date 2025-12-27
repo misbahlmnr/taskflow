@@ -26,11 +26,45 @@ import {
   RegisterFormSchema,
 } from "@/features/auth/schema/register.schema";
 import Link from "next/link";
+import { useState } from "react";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { LOCAL_STORAGE_BETTER_AUTH_TOKEN_KEY } from "../constant/local-storage";
 
 const RegisterForm = ({ className }: { className?: string }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
   });
+
+  const onSubmit = async (payload: RegisterFormSchema) => {
+    try {
+      setIsLoading(true);
+      const { data: authResponseData, error } = await authClient.signUp.email({
+        name: payload.name,
+        email: payload.email,
+        password: payload.password,
+      });
+
+      if (error?.code) {
+        toast.error(getErrorMessage(error.code, "en"));
+        return;
+      }
+
+      if (authResponseData?.token) {
+        localStorage.setItem(
+          LOCAL_STORAGE_BETTER_AUTH_TOKEN_KEY,
+          authResponseData.token
+        );
+        toast.success("Register successfully");
+      }
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -42,7 +76,7 @@ const RegisterForm = ({ className }: { className?: string }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup className="gap-3">
               <Field className="mb-5">
                 <Button variant="outline" type="button">
@@ -111,6 +145,7 @@ const RegisterForm = ({ className }: { className?: string }) => {
                     <Input
                       {...field}
                       id={field.name}
+                      type="password"
                       aria-invalid={fieldState.invalid}
                       placeholder="*******"
                     />
@@ -132,6 +167,7 @@ const RegisterForm = ({ className }: { className?: string }) => {
                     <Input
                       {...field}
                       id={field.name}
+                      type="password"
                       aria-invalid={fieldState.invalid}
                       placeholder="*******"
                     />
@@ -143,7 +179,9 @@ const RegisterForm = ({ className }: { className?: string }) => {
               />
 
               <Field>
-                <Button type="submit">Register</Button>
+                <Button type="submit" disabled={isLoading}>
+                  Register
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/sign-in">Sign in</Link>
