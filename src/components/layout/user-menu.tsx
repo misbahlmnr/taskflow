@@ -10,18 +10,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOut, Settings } from "lucide-react";
-import { toast } from "sonner";
+import { User } from "@/features/auth/type";
 
-export function UserMenu() {
-  const user = {
-    name: "Misbah",
-    email: "misbah@gmail.com",
-  };
-
-  const handleLogout = () => {
-    toast.success("Logged out successfully");
-  };
-
+export function UserMenu({
+  user,
+  handleLogout,
+}: {
+  user: User | undefined;
+  handleLogout: () => void;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,9 +32,9 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none">{user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
+              {user?.email}
             </p>
           </div>
         </DropdownMenuLabel>

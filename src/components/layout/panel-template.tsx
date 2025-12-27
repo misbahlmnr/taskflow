@@ -6,14 +6,30 @@ import { Button } from "../ui/button";
 import { Menu, Moon, Plus, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserMenu } from "./user-menu";
+import { useSessionStore } from "@/features/auth/store/session.store";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const PanelTemplate = ({ children }: { children: ReactNode }) => {
+  const { session, clearSession } = useSessionStore();
+  const user = session?.user;
+
   const theme = "dark";
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    clearSession();
+    toast.success("Logout successfully");
+    router.push("/sign-in");
+  };
+
   return (
     <div className="flex min-h-screen w-full bg-background">
       {/* Desktop Sidebar */}
       <div className="hidden md:block">
-        <PanelSidebar />
+        <PanelSidebar user={user} handleLogout={handleLogout} />
       </div>
 
       {/* Main content */}
@@ -69,7 +85,7 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
             </Button>
 
             {/* User Menu */}
-            <UserMenu />
+            <UserMenu user={user} handleLogout={handleLogout} />
           </div>
         </header>
 

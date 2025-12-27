@@ -8,7 +8,6 @@ import {
   Grid3X3,
   LayoutDashboard,
   LogOut,
-  LucideIcon,
   Settings,
   Sparkles,
   Target,
@@ -19,42 +18,33 @@ import { useState } from "react";
 import { cn, formatTime } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-
-type View =
-  | "dashboard"
-  | "matrix"
-  | "calendar"
-  | "habits"
-  | "settings"
-  | "completed"
-  | "pomodoro";
-
-interface NavItem {
-  id: View;
-  label: string;
-  icon: LucideIcon;
-}
+import { NavItem } from "@/types";
+import { User } from "@/features/auth/type";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const navItems: NavItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "matrix", label: "Eisenhower Matrix", icon: Grid3X3 },
-  { id: "calendar", label: "Calendar", icon: Calendar },
-  { id: "pomodoro", label: "Pomodoro", icon: Timer },
-  { id: "habits", label: "Habits", icon: Target },
-  { id: "completed", label: "Completed", icon: CheckCircle2 },
-  { id: "settings", label: "Settings", icon: Settings },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Eisenhower Matrix", href: "/matrix", icon: Grid3X3 },
+  { label: "Calendar", href: "/calender", icon: Calendar },
+  { label: "Pomodoro", href: "/pomodoro", icon: Timer },
+  { label: "Habits", href: "/habits", icon: Target },
+  { label: "Completed", href: "/completed-task", icon: CheckCircle2 },
+  { label: "Settings", href: "/settings", icon: Settings },
 ];
 
-const PanelSidebar = () => {
+const PanelSidebar = ({
+  user,
+  handleLogout,
+}: {
+  user: User | undefined;
+  handleLogout: () => void;
+}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [view, setView] = useState("dashboard");
-  const status = "running";
-  const user = { name: "Misbah", email: "misbahx.id@gmail.com" };
 
-  const logout = () => {};
-  const navigate = useRouter();
+  const pathname = usePathname();
+
+  const status = "default";
 
   return (
     <motion.aside
@@ -85,7 +75,7 @@ const PanelSidebar = () => {
           variant="ghost"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="h-8 w-8 text-sidebar-foreground"
+          className="h-8 w-8 text-sidebar-foreground bg-sidebar-accent"
         >
           {sidebarOpen ? (
             <ChevronLeft className="h-4 w-4" />
@@ -98,14 +88,13 @@ const PanelSidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
         {navItems.map((item) => {
-          const isActive = view === item.id;
+          const isActive = pathname === item.href;
           const Icon = item.icon;
 
           const button = (
             <Button
-              key={item.id}
+              key={item.href}
               variant="ghost"
-              onClick={() => setView(item.id)}
               className={cn(
                 "w-full justify-start gap-3 h-11 transition-all duration-200",
                 sidebarOpen ? "px-3" : "px-0 justify-center",
@@ -113,27 +102,30 @@ const PanelSidebar = () => {
                   ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50"
               )}
+              asChild
             >
-              <Icon
-                className={cn("h-5 w-5 shrink-0", isActive && "text-primary")}
-              />
-              {sidebarOpen && <span className="truncate">{item.label}</span>}
-              {isActive && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute left-0 w-1 h-6 rounded-r-full bg-primary"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              <Link href={item.href}>
+                <Icon
+                  className={cn("h-5 w-5 shrink-0", isActive && "text-primary")}
                 />
-              )}
+                {sidebarOpen && <span className="truncate">{item.label}</span>}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNav"
+                    className="absolute left-0 w-1 h-6 rounded-r-full bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </Link>
             </Button>
           );
 
           return sidebarOpen ? (
-            <div key={item.id} className="relative">
+            <div key={item.href} className="relative">
               {button}
             </div>
           ) : (
-            <Tooltip key={item.id} delayDuration={0}>
+            <Tooltip key={item.href} delayDuration={0}>
               <TooltipTrigger asChild>
                 <div className="relative">{button}</div>
               </TooltipTrigger>
@@ -248,11 +240,7 @@ const PanelSidebar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    logout();
-                    toast.success("Logged out successfully");
-                    navigate.push("/auth");
-                  }}
+                  onClick={handleLogout}
                   className="w-full justify-start gap-2 h-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 >
                   <LogOut className="h-4 w-4" />
@@ -265,11 +253,7 @@ const PanelSidebar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => {
-                      logout();
-                      toast.success("Logged out successfully");
-                      navigate.push("/auth");
-                    }}
+                    onClick={handleLogout}
                     className="h-9 w-9 rounded-full bg-primary/10 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <span className="text-sm font-medium text-primary">
