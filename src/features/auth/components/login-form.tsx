@@ -26,11 +26,42 @@ import {
   loginFormSchema,
 } from "@/features/auth/schema/login.schema";
 import Link from "next/link";
+import { useState } from "react";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const LoginForm = ({ className }: { className?: string }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const router = useRouter();
+
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
   });
+
+  const onSubmit = async (payload: LoginFormSchema) => {
+    try {
+      setIsLoading(true);
+
+      const { error } = await authClient.signIn.email({
+        email: payload.email,
+        password: payload.password,
+      });
+
+      if (error?.code) {
+        toast.error(getErrorMessage(error.code, "en"));
+        return;
+      }
+
+      toast.success("Login successfully");
+      router.push("/dashboard");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -42,7 +73,7 @@ const LoginForm = ({ className }: { className?: string }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -89,17 +120,18 @@ const LoginForm = ({ className }: { className?: string }) => {
                   <Field data-invalid={fieldState.invalid}>
                     <div className="flex items-center">
                       <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <a
+                      <Link
                         href="#"
                         className="ml-auto text-sm underline-offset-4 hover:underline"
                       >
                         Forgot your password?
-                      </a>
+                      </Link>
                     </div>
 
                     <Input
                       {...field}
                       id={field.name}
+                      type="password"
                       aria-invalid={fieldState.invalid}
                       placeholder="*******"
                     />
@@ -110,7 +142,9 @@ const LoginForm = ({ className }: { className?: string }) => {
                 )}
               />
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isLoading}>
+                  Login
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/sign-up">Sign up</Link>
