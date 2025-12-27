@@ -29,10 +29,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { LOCAL_STORAGE_BETTER_AUTH_TOKEN_KEY } from "../constant/local-storage";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = ({ className }: { className?: string }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
@@ -41,7 +43,7 @@ const RegisterForm = ({ className }: { className?: string }) => {
   const onSubmit = async (payload: RegisterFormSchema) => {
     try {
       setIsLoading(true);
-      const { data: authResponseData, error } = await authClient.signUp.email({
+      const { error } = await authClient.signUp.email({
         name: payload.name,
         email: payload.email,
         password: payload.password,
@@ -52,13 +54,8 @@ const RegisterForm = ({ className }: { className?: string }) => {
         return;
       }
 
-      if (authResponseData?.token) {
-        localStorage.setItem(
-          LOCAL_STORAGE_BETTER_AUTH_TOKEN_KEY,
-          authResponseData.token
-        );
-        toast.success("Register successfully");
-      }
+      toast.success("Register successfully");
+      router.push("/dashboard");
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
