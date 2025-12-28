@@ -7,6 +7,7 @@ import StatCard from "@/features/dashboard/components/stat-card";
 import TaskList from "@/features/dashboard/components/task-list";
 import MatrixOverview from "@/features/dashboard/components/matrix-overview";
 import TodayHabits from "@/features/dashboard/components/today-habits";
+import { getGreatingByTime } from "@/lib/utils";
 
 const DashboardPage = async () => {
   const session = await auth.api.getSession({
@@ -18,7 +19,7 @@ const DashboardPage = async () => {
     <MaxWidthWrapper className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-xl lg:text-3xl font-bold">
-          Good morning, {user?.name}! 👋
+          {getGreatingByTime()}, {user?.name}! 👋
         </h1>
         <div className="text-sm lg:text-base text-muted-foreground">
           {formatFullDate(new Date())}
