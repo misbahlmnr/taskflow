@@ -1,22 +1,22 @@
 "use client";
 
+// import { useCreateTodo } from "@/features/todo/hooks/useCreateTask";
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-// import { useCreateTodo } from "@/features/todo/hooks/useCreateTask";
-import { useState } from "react";
 import { useCreateTask } from "@/features/task/hooks/use-create-task";
 
-const FormAddModal = () => {
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+
+const FormAddModal = ({}) => {
   const [task, setTask] = useState<string>("");
   const [open, setOpen] = useState(false);
 
@@ -40,11 +40,6 @@ const FormAddModal = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2 text-sm md:text-base">
-          <Plus size={16} /> Add Task
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>

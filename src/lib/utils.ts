@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue,clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 // Type checkers

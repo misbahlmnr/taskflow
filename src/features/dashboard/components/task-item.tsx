@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { Task } from "@/features/task/type";
 
-const TaskItem = () => {
+const TaskItem = ({
+  task,
+  deleteTask,
+}: {
+  task: Task;
+  deleteTask: (id: number) => void;
+}) => {
   return (
     <div className="p-4 border flex justify-between items-center rounded-lg group hover:cursor-pointer">
       <div className="flex gap-2 items-center">
@@ -12,13 +19,21 @@ const TaskItem = () => {
         </div>
         <div className="space-y-1">
           <div className="text-sm font-medium flex items-center gap-2">
-            Testes <span className="block w-2 h-2 bg-primary rounded-full" />
+            {task.title}{" "}
+            <span className="block w-2 h-2 bg-primary rounded-full" />
           </div>
           <div className="text-xs text-muted-foreground">Today</div>
         </div>
       </div>
-      <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
-        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+      <div className="flex items-center gap-2">
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => deleteTask(Number(task.id))}
+          className="hover:bg-red-50 hover:text-red-600 text-red-500"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

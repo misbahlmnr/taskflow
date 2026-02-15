@@ -1,3 +1,7 @@
+"use client";
+
+import { Calendar } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,10 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { useDeleteTask } from "@/features/task/hooks/use-delete-task";
+import { useTask } from "@/features/task/hooks/use-tasks";
+import { isEmpty } from "@/lib/utils";
+
 import TaskItem from "./task-item";
 
 const TaskList = () => {
+  const { data: tasks, isLoading } = useTask();
+  const { mutate: deleteTask } = useDeleteTask();
+
   return (
     <Card className="hover:shadow-md transition-all duration-200">
       <CardHeader>
@@ -24,11 +34,19 @@ const TaskList = () => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          <TaskItem />
-          <TaskItem />
-          <TaskItem />
-          <TaskItem />
+        <div className="space-y-2 h-[200px] max-h-[350px] overflow-y-auto">
+          {!isEmpty(tasks) ? (
+            tasks.map((task) => (
+              <TaskItem key={task.id} task={task} deleteTask={deleteTask} />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center text-muted-foreground py-8">
+              <p className="text-base">No tasks here</p>
+              <div className="text-sm text-muted-foreground">
+                Add task to get started
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import PanelSidebar from "./panel-sidebar";
 import { Button } from "../ui/button";
 import { Menu, Moon, Plus, Sun } from "lucide-react";
@@ -10,8 +10,11 @@ import { useSessionStore } from "@/features/auth/store/session.store";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import ModalFormAddTask from "../modal-form-add-task";
 
 const PanelTemplate = ({ children }: { children: ReactNode }) => {
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+
   const { session, clearSession } = useSessionStore();
   const user = session?.user;
 
@@ -77,7 +80,7 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
 
             {/* Add Task Button */}
             <Button
-              onClick={() => {}}
+              onClick={() => setIsAddTaskOpen(!isAddTaskOpen)}
               className="gap-2 gradient-primary text-primary-foreground hover:opacity-90 transition-opacity shadow-md"
             >
               <Plus className="h-4 w-4" />
@@ -100,6 +103,8 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
             {children}
           </motion.div>
         </div>
+
+        <ModalFormAddTask isOpen={isAddTaskOpen} onOpenChange={setIsAddTaskOpen} />
       </main>
     </div>
   );

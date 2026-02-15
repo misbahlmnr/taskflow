@@ -1,12 +1,14 @@
-import { tasksTable } from "@/features/todo/db/task-table.schema";
+import { tasksTable } from "@/features/task/db/task-table.schema";
 
 export type TaskStatus = "todo" | "in-progress" | "done";
 
 export type Task = {
   id: string;
-  name: string;
+  title: string;
   description: string | null;
-  status: TaskStatus;
+  priorityQuadrant: string;
+  date: string;
+  tags: string[] | null;
   created_at: string;
   updated_at: string | null;
 };

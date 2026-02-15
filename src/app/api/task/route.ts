@@ -5,10 +5,12 @@ import { updateTaskSchema } from "@/features/task/schema/form-task.schema";
 
 const taskService = new TaskService();
 
-const createTodoSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().nullable().optional(),
-  status: z.enum(["todo", "in-progress", "done"]).default("todo"),
+const createTaskSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  priorityQuadrant: z.enum(["do-first", "delegate", "schedule", "eliminate"]),
+  date: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 const updateStatusSchema = z.object({
@@ -16,8 +18,8 @@ const updateStatusSchema = z.object({
   status: z.enum(["todo", "in-progress", "done"]),
 });
 
-export type CreateTodoDto = z.infer<typeof createTodoSchema>;
-export type UpdateTodoDto = CreateTodoDto & { id: number };
+export type CreateTaskDto = z.infer<typeof createTaskSchema>;
+export type UpdateTaskDto = CreateTaskDto & { id: number };
 export type UpdateStatusDto = z.infer<typeof updateStatusSchema>;
 
 export async function GET() {
@@ -27,10 +29,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = createTodoSchema.parse(await request.json());
-    const todo = await taskService.createTask(body);
+    const body = createTaskSchema.parse(await request.json());
+    const task = await taskService.createTask(body);
 
-    return NextResponse.json(todo, { status: 201 });
+    return NextResponse.json(task, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -38,15 +40,16 @@ export async function POST(request: Request) {
           message: "Validation error",
           errors: error.flatten().fieldErrors,
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
     return NextResponse.json(
       {
         message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -66,7 +69,7 @@ export async function PUT(request: Request) {
           message: "Validation error",
           errors: error.flatten().fieldErrors,
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -74,7 +77,7 @@ export async function PUT(request: Request) {
       {
         message: "Internal Server Error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -88,7 +91,7 @@ export async function DELETE(request: Request) {
       {
         message: "Invalid or missing 'id' parameter",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -96,7 +99,7 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json(
     { message: "Todo deleted successfully" },
-    { status: 200 }
+    { status: 200 },
   );
 }
 
@@ -116,7 +119,7 @@ export async function PATCH(request: Request) {
           message: "Validation error",
           errors: error.flatten().fieldErrors,
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -124,7 +127,7 @@ export async function PATCH(request: Request) {
       {
         message: "Internal Server Error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

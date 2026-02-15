@@ -1,9 +1,9 @@
 import { InsertTask, UpdateTask } from "@/features/task/type";
 import { TaskRepository } from "@/features/task/server/task.repository";
 import {
-  CreateTodoDto,
+  CreateTaskDto,
   UpdateStatusDto,
-  UpdateTodoDto,
+  UpdateTaskDto,
 } from "@/app/api/task/route";
 
 export class TaskService {
@@ -17,21 +17,27 @@ export class TaskService {
     return this.repository.findById(id);
   }
 
-  async createTask(payload: CreateTodoDto) {
+  async createTask(payload: CreateTaskDto) {
     const data: InsertTask = {
-      name: payload.name,
+      title: payload.title,
       description: payload.description ?? null,
-      status: payload.status as InsertTask["status"],
+      priorityQuadrant:
+        payload.priorityQuadrant as InsertTask["priorityQuadrant"],
+      date: payload.date ? new Date(payload.date) : undefined,
+      tags: payload.tags ?? null,
     };
 
     return this.repository.create(data);
   }
 
-  async updateTask(payload: UpdateTodoDto) {
+  async updateTask(payload: UpdateTaskDto) {
     const data: Omit<UpdateTask, "id"> = {
-      name: payload.name,
+      title: payload.title,
       description: payload.description ?? null,
-      status: payload.status as UpdateTask["status"],
+      priorityQuadrant:
+        payload.priorityQuadrant as UpdateTask["priorityQuadrant"],
+      date: payload.date ?? null,
+      tags: payload.tags ?? null,
     };
 
     return this.repository.update(payload.id, data);

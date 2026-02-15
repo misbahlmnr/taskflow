@@ -1,12 +1,13 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
-import { auth } from "@/lib/auth";
-import { formatFullDate } from "@/lib/formatter";
 import { CheckCircle2, Clock, Flame, Target } from "lucide-react";
 import { headers } from "next/headers";
+
+import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MatrixOverview from "@/features/dashboard/components/matrix-overview";
 import StatCard from "@/features/dashboard/components/stat-card";
 import TaskList from "@/features/dashboard/components/task-list";
-import MatrixOverview from "@/features/dashboard/components/matrix-overview";
 import TodayHabits from "@/features/dashboard/components/today-habits";
+import { auth } from "@/lib/auth";
+import { formatFullDate } from "@/lib/formatter";
 import { getGreatingByTime } from "@/lib/utils";
 
 const DashboardPage = async () => {

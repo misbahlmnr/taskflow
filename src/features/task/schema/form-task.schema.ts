@@ -1,17 +1,21 @@
 import z from "zod";
 
 export const createTaskSchema = z.object({
-  name: z.string().min(1, "Task name is required"),
+  title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  status: z.enum(["todo", "in-progress", "done"]).default("todo"),
+  priorityQuadrant: z.enum(["do-first", "delegate", "schedule", "eliminate"]),
+  date: z.date().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
 
 export const updateTaskSchema = z.object({
-  name: z.string().min(1, "Task name is required"),
+  title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  status: z.enum(["todo", "in-progress", "done"]),
+  priorityQuadrant: z.enum(["do-first", "delegate", "schedule", "eliminate"]),
+  date: z.date().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export type UpdateTaskFormValues = z.infer<typeof updateTaskSchema>;
