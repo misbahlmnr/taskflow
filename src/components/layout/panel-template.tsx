@@ -1,16 +1,18 @@
 "use client";
 
-import { ReactNode, useState } from "react";
-import PanelSidebar from "./panel-sidebar";
-import { Button } from "../ui/button";
+import { AnimatePresence,motion } from "framer-motion";
 import { Menu, Moon, Plus, Sun } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { UserMenu } from "./user-menu";
-import { useSessionStore } from "@/features/auth/store/session.store";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { ReactNode, useState } from "react";
 import { toast } from "sonner";
+
+import { useSessionStore } from "@/features/auth/store/session.store";
+import { authClient } from "@/lib/auth-client";
+
 import ModalFormAddTask from "../modal-form-add-task";
+import { Button } from "../ui/button";
+import PanelSidebar from "./panel-sidebar";
+import { UserMenu } from "./user-menu";
 
 const PanelTemplate = ({ children }: { children: ReactNode }) => {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);

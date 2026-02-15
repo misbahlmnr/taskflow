@@ -1,7 +1,9 @@
 "use client";
 
-import { Calendar } from "lucide-react";
+import { Calendar, CircleCheck } from "lucide-react";
+import { useState } from "react";
 
+import ModalFormAddTask from "@/components/modal-form-add-task";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,10 +19,12 @@ import { isEmpty } from "@/lib/utils";
 import TaskItem from "./task-item";
 
 const TaskList = () => {
-  const { data: tasks, isLoading } = useTask();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { data: tasks } = useTask();
   const { mutate: deleteTask } = useDeleteTask();
 
   return (
+    <>
     <Card className="hover:shadow-md transition-all duration-200">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
@@ -30,7 +34,7 @@ const TaskList = () => {
           <span>{"Today's Focus"}</span>
         </CardTitle>
         <CardAction>
-          <Button variant="ghost">Add Task</Button>
+          <Button variant="ghost" onClick={() => setIsOpen(!isOpen)}>Add Task</Button>
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -41,7 +45,10 @@ const TaskList = () => {
             ))
           ) : (
             <div className="flex flex-col items-center justify-center text-muted-foreground py-8">
-              <p className="text-base">No tasks here</p>
+              <div className="flex w-[70px] h-[70px] rounded-full items-center justify-center bg-gray-50 mb-3">
+                <CircleCheck className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-base">No tasks for today</p>
               <div className="text-sm text-muted-foreground">
                 Add task to get started
               </div>
@@ -50,6 +57,8 @@ const TaskList = () => {
         </div>
       </CardContent>
     </Card>
+    <ModalFormAddTask isOpen={isOpen} onOpenChange={setIsOpen} />
+    </>
   );
 };
 
