@@ -1,11 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2, PlusIcon, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 import { useCreateTask } from "@/features/task/hooks/use-create-task";
+import { useUpdateTask } from "@/features/task/hooks/use-update-task";
+import { useTaskStore } from "@/features/task/store/task-store";
+import { Task } from "@/features/task/type";
 
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
@@ -25,15 +28,15 @@ const formAddTaskSchema = z.object({
 
 type FormAddTaskValues = z.infer<typeof formAddTaskSchema>;
 
-interface Props {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
+const ModalFormAddTask = () => {
   const [tagInput, setTagInput] = useState<string>("");
 
+  const { activeTask, closeTask } = useTaskStore();
   const { mutate: createTask, isPending } = useCreateTask();
+  const { mutate: updateTask, isPending: isUpdating } = useUpdateTask();
+
+  const isOpen = !!activeTask;
+  const isCreate = activeTask?.id === "new";
 
   const form = useForm<FormAddTaskValues>({
     resolver: zodResolver(formAddTaskSchema),
@@ -47,19 +50,41 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
   });
 
   const onSubmit = (payload: FormAddTaskValues) => {
-    createTask(payload, {
-      onSuccess: () => {
-        onOpenChange(false);
-        form.reset();
-      },
-    });
+    if (isCreate) {
+      createTask(payload, { onSuccess: closeTask });
+    } else if (activeTask && activeTask.id !== "new") {
+      updateTask({ id: Number(activeTask.id), ...payload }, { onSuccess: closeTask });
+    }
   };
 
+  useEffect(() => {
+    if (!activeTask) return;
+
+    if (isCreate) {
+      form.reset({
+        title: "",
+        description: "",
+        priorityQuadrant: "do-first",
+        date: undefined,
+        tags: [],
+      });
+    } else if (activeTask.id !== "new") {
+      const task = activeTask as Task;
+      form.reset({
+        title: task.title,
+        description: task.description || "",
+        priorityQuadrant: task.priorityQuadrant,
+        date: task.date ? new Date(task.date) : undefined,
+        tags: task.tags || [],
+      });
+    }
+  }, [activeTask, form, isCreate])
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={closeTask}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader className="mb-5">
-          <DialogTitle>New Task</DialogTitle>
+          <DialogTitle>{isCreate ? "New Task" : "Edit Task"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="gap-4">
@@ -74,7 +99,7 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
                     id="task"
                     type="text"
                     placeholder="Type task title"
-                    disabled={isPending}
+                    disabled={isPending || isUpdating}
                     autoFocus
                   />
                   {fieldState.invalid && (
@@ -94,7 +119,7 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
                     {...field}
                     id="description"
                     placeholder="Type task description"
-                    disabled={isPending}
+                    disabled={isPending || isUpdating}
                     rows={5}
                   />
                 </Field>
@@ -271,7 +296,7 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
                         value={tagInput}
                         onChange={(e) => setTagInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        disabled={isPending}
+                        disabled={isPending || isUpdating}
                         className="flex-1"
                       />
                       <Button
@@ -279,7 +304,7 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
                         variant="outline"
                         size="icon"
                         onClick={addTag}
-                        disabled={isPending || !tagInput.trim()}
+                        disabled={isPending || isUpdating || !tagInput.trim()}
                         className="disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <PlusIcon className="size-4" />
@@ -296,7 +321,7 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
                             <button
                               type="button"
                               onClick={() => removeTag(tag)}
-                              disabled={isPending}
+                              disabled={isPending || isUpdating}
                               className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
                             >
                               <X className="size-3" />
@@ -318,17 +343,17 @@ const ModalFormAddTask = ({ isOpen, onOpenChange }: Props) => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
+              onClick={closeTask}
+              disabled={isPending || isUpdating}
               className="w-[49%]"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending} className="w-[49%]">
-              {isPending ? (
+            <Button type="submit" disabled={isPending || isUpdating} className="w-[49%]">
+              {isPending || isUpdating ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                "Add Task"
+                isCreate ? "Add Task" : "Update Task"
               )}
             </Button>
           </div>

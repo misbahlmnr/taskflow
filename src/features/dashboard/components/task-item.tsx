@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { useTaskStore } from "@/features/task/store/task-store";
 import { Task } from "@/features/task/type";
 
 const TaskItem = ({
@@ -9,8 +11,13 @@ const TaskItem = ({
   task: Task;
   deleteTask: (id: number) => void;
 }) => {
+  const { openTask } = useTaskStore();
+
   return (
-    <div className="p-4 border flex justify-between items-center rounded-lg group hover:cursor-pointer">
+    <div 
+      className="p-4 border flex justify-between items-center rounded-lg group hover:cursor-pointer hover:bg-gray-50 transition-colors"
+      onClick={() => openTask(task)}
+    >
       <div className="flex gap-2 items-center">
         <div>
           <Button variant="ghost" size="icon" className="hover:bg-muted">
@@ -29,7 +36,10 @@ const TaskItem = ({
         <Button
           size="icon"
           variant="ghost"
-          onClick={() => deleteTask(Number(task.id))}
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteTask(Number(task.id));
+          }}
           className="hover:bg-red-50 hover:text-red-600 text-red-500"
         >
           <Trash2 className="h-4 w-4" />

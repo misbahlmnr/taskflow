@@ -1,27 +1,22 @@
 "use client";
 
-import { AnimatePresence,motion } from "framer-motion";
-import { Menu, Moon, Plus, Sun } from "lucide-react";
+import {motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { toast } from "sonner";
 
 import { useSessionStore } from "@/features/auth/store/session.store";
 import { authClient } from "@/lib/auth-client";
 
 import ModalFormAddTask from "../modal-form-add-task";
-import { Button } from "../ui/button";
+import Navbar from "./navbar";
 import PanelSidebar from "./panel-sidebar";
-import { UserMenu } from "./user-menu";
 
 const PanelTemplate = ({ children }: { children: ReactNode }) => {
-  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-
   const { session, clearSession } = useSessionStore();
-  const user = session?.user;
 
-  const theme = "dark";
   const router = useRouter();
+  const user = session?.user;
 
   const handleLogout = async () => {
     await authClient.signOut();
@@ -29,6 +24,7 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
     toast.success("Logout successfully");
     router.push("/sign-in");
   };
+  
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -40,59 +36,7 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Top Bar */}
-        <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6 sticky top-0 z-20">
-          <div className="flex items-center gap-3">
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {}}
-              className="md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-
-            <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {}}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={theme}
-                  initial={{ y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 20, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  {theme === "dark" ? (
-                    <Moon className="h-5 w-5" />
-                  ) : (
-                    <Sun className="h-5 w-5" />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </Button>
-
-            {/* Add Task Button */}
-            <Button
-              onClick={() => setIsAddTaskOpen(!isAddTaskOpen)}
-              className="gap-2 gradient-primary text-primary-foreground hover:opacity-90 transition-opacity shadow-md"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">New Task</span>
-            </Button>
-
-            {/* User Menu */}
-            <UserMenu user={user} handleLogout={handleLogout} />
-          </div>
-        </header>
+        <Navbar user={user} handleLogout={handleLogout} />
 
         {/* Page Content */}
         <div className="flex-1 overflow-auto">
@@ -106,7 +50,7 @@ const PanelTemplate = ({ children }: { children: ReactNode }) => {
           </motion.div>
         </div>
 
-        <ModalFormAddTask isOpen={isAddTaskOpen} onOpenChange={setIsAddTaskOpen} />
+        <ModalFormAddTask />
       </main>
     </div>
   );
