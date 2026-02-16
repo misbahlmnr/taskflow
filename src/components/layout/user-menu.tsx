@@ -1,5 +1,8 @@
 "use client";
 
+import { LogOut, Settings } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { LogOut, Settings } from "lucide-react";
 import { User } from "@/features/auth/type";
 
 export function UserMenu({
