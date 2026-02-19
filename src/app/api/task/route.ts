@@ -1,26 +1,14 @@
-import { z } from "zod";
-import { TaskService } from "@/features/task/server/task.service";
 import { NextResponse } from "next/server";
-import { updateTaskSchema } from "@/features/task/schema/form-task.schema";
+import { z } from "zod";
+
+import { createTaskSchema, updateTaskSchema } from "@/features/task/schema/form-task.schema";
+import { TaskService } from "@/features/task/server/task.service";
 
 const taskService = new TaskService();
 
-const createTaskSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  priorityQuadrant: z.enum(["do-first", "delegate", "schedule", "eliminate"]),
-  date: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-});
-
-const updateStatusSchema = z.object({
-  id: z.number(),
-  status: z.enum(["todo", "in-progress", "done"]),
-});
-
 export type CreateTaskDto = z.infer<typeof createTaskSchema>;
 export type UpdateTaskDto = CreateTaskDto & { id: number };
-export type UpdateStatusDto = z.infer<typeof updateStatusSchema>;
+// export type UpdateStatusDto = z.infer<typeof updateStatusSchema>;
 
 export async function GET() {
   const data = await taskService.getTasks();

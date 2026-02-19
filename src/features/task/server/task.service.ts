@@ -1,10 +1,9 @@
-import { InsertTask, UpdateTask } from "@/features/task/type";
-import { TaskRepository } from "@/features/task/server/task.repository";
 import {
   CreateTaskDto,
-  UpdateStatusDto,
   UpdateTaskDto,
 } from "@/app/api/task/route";
+import { TaskRepository } from "@/features/task/server/task.repository";
+import { InsertTask, UpdateTask } from "@/features/task/type";
 
 export class TaskService {
   constructor(private readonly repository = new TaskRepository()) {}
@@ -36,7 +35,7 @@ export class TaskService {
       description: payload.description ?? null,
       priorityQuadrant:
         payload.priorityQuadrant as UpdateTask["priorityQuadrant"],
-      date: payload.date ?? null,
+      date: payload.date ? new Date(payload.date) : undefined,
       tags: payload.tags ?? null,
     };
 
@@ -52,15 +51,15 @@ export class TaskService {
     await this.repository.delete(id);
   }
 
-  async updateStatus(payload: UpdateStatusDto) {
-    const todo = await this.repository.update(payload.id, {
-      status: payload.status as UpdateTask["status"],
-    });
+  // async updateStatus(payload: UpdateStatusDto) {
+  //   const todo = await this.repository.update(payload.id, {
+  //     status: payload.status as UpdateTask["status"],
+  //   });
 
-    if (!todo) {
-      throw new Error("Task not found");
-    }
+  //   if (!todo) {
+  //     throw new Error("Task not found");
+  //   }
 
-    return todo;
-  }
+  //   return todo;
+  // }
 }
